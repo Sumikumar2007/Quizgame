@@ -7,7 +7,14 @@ user={}
 
 
 #====PRINTING ABOUT GAME====
-print("GAME RULES\n Here you get a question and options on your screen with numbering.\n You have to give your answer by typing the option numbering.\n If you give correct answer you will get +1 score.\n Before playing game you have to register and login with username and password")
+def about():
+     print("This is a text based stock market quiz game \n")
+     print("This is for educational purpose only\n ")
+     print(" — Here are some game rules : \n")
+     print(" → Here you got a question and its four oprions\n")
+     print(" → You have to give your answer from those four options by writing it \n")
+     print(" → If you give right answer you will get +10 score points")
+
 
 #-----READING BINARY FILE------
 
@@ -24,43 +31,43 @@ def read():
 
 def register():
     print("----NEW USER REGISTER----\n\n")
-    username=input("Enter your desiresd username")
+    username=input("Enter your desired username")
     password=input("Enter your desired password")
+    fh=open("user_data.dat","rb")
+    print("Opened the file")
     try:
-         
-         fh=open("user_data.dat","rb")
-         user_list=pickle.load(fh)
-         return
-    except EOFError:
-          print("File not found")
+        user_list=pickle.load(fh)
+        print("Loaded the file")
+        # return -> no use
+    except Exception as e:
+          print("Error:",e)
           user_list=[]
     for user in user_list:
-          if user["username"]==username:
-               print("Username already exists.\n Please chose amother")
-    user_data={"usename":username,"password":password,"score":0}
+        if user["username"]==username:
+            print("Username already exists.\n Please chose another")
+    user_data={"username":username,"password":password,"score":0}
     user_list.append(user_data)
-    open("user_data.dat","wb")
+    fh.close()
+    fh = open("user_data.dat","rb+")
     pickle.dump(user_list,fh)
     print("Registration Successfull !!")
-               
-                    
-         
     
  #----- MAKE USER LOGIN------
 
 def login():
     ("----USER LOGIN----")
-    username=input("Enter your registered Usernname :\t")
-    password=input("Enter your passsword : \t")
+    username=input("Enter your registered Usernname: ")
+    password=input("Enter your passsword: ")
     try:
          fh=open("user_data.dat","rb")
          user_list=pickle.load(fh)
+         
     except EOFError:
-          
           print("File not found")
+
     for user in user_list:
-          if user["username"]==username and user["password"]==password:
-               return user
+        if user["username"]==username and user["password"]==password:
+            return user
     print("Invalid username or password")     
 
 Quiz_questions = [
@@ -149,44 +156,48 @@ Quiz_questions = [
                 
 # -----RUNNING OF QUIZ-----
 def run_quiz():
-     print("----STOCK MARKET QUIZ----")
-     score=0
-     for q in Quiz_questions:
-          print("\n"+q["Quiz_questions"])
-          for opt in q["options"]:
-                    print(opt)
-     user_ans=input("Enter your answer in (A/B/C/D)").upper()
-     if user_ans==q["answer"]:
-          print("Hurray !! Right answer")
-          score+=10
-     else:
-          print("OOPS !! Wrong answer")
-     print(f"\n Your score:{score}/{len(Quiz_questions)*10}")
-     return score
+    print("----STOCK MARKET QUIZ----")
+    score=0
+    for q in Quiz_questions:
+        print("\n"+q["question"])
+        for opt in q["options"]:
+            print(opt)
+        user_ans=input("Enter your answer in (A/B/C/D)").upper()
+        if user_ans==q["answer"]:
+            print("Hurray !! Right answer")
+            score+=10
+        else:
+            print("OOPS !! Wrong answer")
+    print(f"\n Your score:{score}/{len(Quiz_questions)*10}")
+    return score
                    # ---- MAIN----
 
-choice=int(input("enter your choice between 1-3"))
-print("====WELCOME TO STOCK MARKET QUIZ GAME====")
-print("MAIN MENU\n 1. REGISTER(If new user)\n 2. LOGIN & PLAY\n 3. EXIT ")
-choice=int(input("Enter your choice between (1-3)"))
+about()
+#print("====WELCOME TO STOCK MARKET QUIZ GAME====")
+#print("MAIN MENU\n 1. REGISTER(If new user)\n 2. LOGIN & PLAY\n 3. EXIT ")
+choice=int(input("Enter your choice between (1-3) : "))
 while True:
-     if choice==1:
-          register()
-     elif choice==2:
-          username=login()
-          if username:
-               user=pickle.load(fh)
-          #---RUNNING QUIZ-----
+    print("MAIN MENU\n 1. REGISTER(If new user)\n 2. LOGIN & PLAY\n 3. EXIT ")
+    choice=int(input("Enter your choice between (1-3) : "))
+    if choice==1:
+        register()
+    elif choice==2:
+        username=login()
+        if username:
+            # user=pickle.load(fh)
+            print(f"Welcome {username} to the Quiz Game")
+        #---RUNNING QUIZ-----
 
-          score=run_quiz()
-               # ----UPDATING SCORE ----
-          if score>user["score"]:
-                    user["score"]=score
-                    pickle.dump(user,fh)
+        score=run_quiz()
+            # ----UPDATING SCORE ----
+        if score>username["score"]:
+            username["score"]=score
+            pickle.dump(username,fh)
 
-          print(f"Your best score: {user['score']}")
-     elif choice==3:
-          print("Thank you for your time")
-          break
-     else:
-          print("LAADLE AUKAAT MEI")
+            print(f"Your best score: {username['score']}")
+            break
+    elif choice==3:
+        print("Thank you for your time")
+        break
+    else:
+        print("LAADLE AUKAAT MEI")
